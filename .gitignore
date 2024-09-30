@@ -1,0 +1,6 @@
+# Visual Studio cache
+.vs/
+
+# Debugging data generated
+SRO.PK2API/bin/
+SRO.PK2API/obj/
