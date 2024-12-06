@@ -39,7 +39,7 @@ namespace SRO.PK2API
             // Check file existence first
             var fileExists = File.Exists(path);
             // Check file setup
-            mFileStream = new FileStream(path, mode, FileAccess.ReadWrite, FileShare.ReadWrite);
+            mFileStream = new FileStream(path, mode, mode == FileMode.Open ? FileAccess.Read : FileAccess.ReadWrite, FileShare.ReadWrite);
             switch (mode)
             {
                 case FileMode.Create:
