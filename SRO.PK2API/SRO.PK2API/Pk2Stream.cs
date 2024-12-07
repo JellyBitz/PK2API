@@ -31,7 +31,7 @@ namespace SRO.PK2API
         /// <exception cref="NotSupportedException"/>
         /// <exception cref="AuthenticationException"/>
         /// <exception cref="IOException"/>
-        public Pk2Stream(string path, string key, FileMode mode = FileMode.Open)
+        public Pk2Stream(string path, string key, FileMode mode, FileAccess access)
         {
             // Set up blowfish
             mBlowfish.Initialize(key);
@@ -39,7 +39,7 @@ namespace SRO.PK2API
             // Check file existence first
             var fileExists = File.Exists(path);
             // Check file setup
-            mFileStream = new FileStream(path, mode, mode == FileMode.Open ? FileAccess.Read : FileAccess.ReadWrite, FileShare.ReadWrite);
+            mFileStream = new FileStream(path, mode, access);
             switch (mode)
             {
                 case FileMode.Create:
