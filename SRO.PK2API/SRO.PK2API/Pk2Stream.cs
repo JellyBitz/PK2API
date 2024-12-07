@@ -28,10 +28,10 @@ namespace SRO.PK2API
         /// </summary>
         /// <param name="path">Path to the PK2 file.</param>
         /// <param name="key">Blowfish key used for encryption.</param>
-        /// <exception cref="NotSupportedException"/>
+        /// <param name="isReadOnly">Check if the stream is gonna be used for read only. Otherwise the file will be created in case does not exists.</param>
         /// <exception cref="AuthenticationException"/>
         /// <exception cref="IOException"/>
-        public Pk2Stream(string path, string key, FileMode mode, FileAccess access)
+        public Pk2Stream(string path, string key, bool isReadOnly = false)
         {
             // Set up blowfish
             mBlowfish.Initialize(key);
@@ -39,21 +39,10 @@ namespace SRO.PK2API
             // Check file existence first
             var fileExists = File.Exists(path);
             // Check file setup
-            mFileStream = new FileStream(path, mode, access);
-            switch (mode)
-            {
-                case FileMode.Create:
-                case FileMode.CreateNew:
-                    CreateBaseStream();
-                    break;
-                case FileMode.Append:
-                case FileMode.OpenOrCreate:
-                    if (!fileExists)
-                        CreateBaseStream();
-                    break;
-                case FileMode.Truncate:
-                    throw new NotSupportedException("Truncate mode is not supported");
-            }
+            mFileStream = new FileStream(path, isReadOnly ? FileMode.Open : FileMode.OpenOrCreate, isReadOnly ? FileAccess.Read : FileAccess.ReadWrite);
+            if (!fileExists)
+                CreateBaseStream();
+
             // Prepare to read the file
             mFileStream.Seek(0, SeekOrigin.Begin);
             mHeader = mFileStream.Read<PackFileHeader>();
